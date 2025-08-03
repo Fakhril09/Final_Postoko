@@ -40,7 +40,7 @@ router.get('/:id', async ( req, res) => {
     const product = await prisma.product.findUnique({ where: { id }});
 
     if (!product) {
-        return errorResponse(res, 'No product found', 404);
+        return errorResponse(res, 'No product found by id', product);
     }
 
     const base = `${req.protocol}://${req.get('host')}`;
@@ -52,10 +52,28 @@ router.get('/:id', async ( req, res) => {
     return successResponse(res, 'Get product by id', productWithImageUrl);
 });
 
+// Get Product By InventoryId
+router.get('/inventory/:id', async ( req, res) => {
+    const { id } = req.params;
+    const product = await prisma.product.findMany({ where: { inventoryId: id }});
+
+    if (!product) {
+        return errorResponse(res, 'No product found by inventory id', product);
+    }
+
+    const base = `${req.protocol}://${req.get('host')}`;
+    const productWithImageUrl = {
+        ...product,
+        image: product.image ? cleanImageUrl( base, product.image ) : undefined
+    };
+
+    return successResponse(res, 'Get product by inventory id', productWithImageUrl);
+});
+
 // Create Product
 router.post('/', upload.single('image'), async ( req, res ) => {
     const { name, price, description, stock, inventoryId} = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
 
     try {
         const inventory = await prisma.inventory.findUnique({ where: { id: inventoryId} });
@@ -68,12 +86,12 @@ router.post('/', upload.single('image'), async ( req, res ) => {
         // Check is there existed product
         const existedProduct = await prisma.product.findFirst({ where: { name } });
         if (existedProduct) {
-            return errorResponse(res, `${name} already existed`, 400);
+            return errorResponse(res, `${name} already existed`, null);
         }
 
         // Check is there any image
         if (!image) {
-            return errorResponse(res, 'Product image is required', 400);
+            return errorResponse(res, 'Product image is required', null);
         }
 
         const product = await prisma.product.create({
@@ -102,28 +120,41 @@ router.put('/:id', upload.single('image'), async ( req, res ) => {
     const { name, price, description, stock, inventoryId } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : undefined;
 
+    // helper untuk hapus file kalau gagal
+    const removeUploadedFile = () => {
+        if (req.file) {
+            const uploadedPath = path.join(__dirname, '..', '..', 'uploads', req.file.filename);
+            fs.unlink(uploadedPath, (err) => {
+                if (err) console.warn(`Failed to delete uploaded file: ${uploadedPath}`);
+                else console.log(`Uploaded file deleted: ${uploadedPath}`);
+        });
+        }
+    };
+
     try {
         // Check is there any inventoryid
         const inventory = await prisma.inventory.findUnique({ where: { id: inventoryId } });
         if (!inventory) {
-            return errorResponse(res, `Inventory with id ${inventoryId} not found`, inventory, 404);
+            removeUploadedFile();
+            return errorResponse(res, `Inventory with id ${inventoryId} not found`, inventory, null);
         }
 
         // Check is there existed product
         const existedProduct = await prisma.product.findUnique({ where: { id } });
         if (!existedProduct) {
-            return errorResponse(res, "inventory not found", 404);
+            removeUploadedFile(); 
+            return errorResponse(res, "inventory not found", null);
         }
 
         // Check is there any image
         if (!image) {
-            return errorResponse(res, 'Product image is required', 400);
+            return errorResponse(res, 'Product image is required', null);
         }
 
         // Check is there sama product
         const sameProduct = await prisma.product.findFirst({ where: { name } });
         if (sameProduct) {
-            return errorResponse(res, `${name} already existed`, 400);
+            return errorResponse(res, `${name} already existed`, null);
         }
 
         if (image && existedProduct.image) {
@@ -167,7 +198,7 @@ router.delete('/:id', async ( req, res ) => {
     try {
         const product = await prisma.product.findUnique({ where: { id } });
         if (!product) {
-            return errorResponse(res, 'Product not found', 404);
+            return errorResponse(res, 'Product not found', null);
         }
 
         if (product.image) {

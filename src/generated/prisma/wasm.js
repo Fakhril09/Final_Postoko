@@ -153,6 +153,14 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.CartScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  quantity: 'quantity',
+  total: 'total',
+  userId: 'userId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -192,12 +200,19 @@ exports.Prisma.InvoiceOrderByRelevanceFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.CartOrderByRelevanceFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  userId: 'userId'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
   Inventory: 'Inventory',
   Product: 'Product',
-  Invoice: 'Invoice'
+  Invoice: 'Invoice',
+  Cart: 'Cart'
 };
 
 /**

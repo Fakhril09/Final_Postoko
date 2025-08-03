@@ -19,34 +19,46 @@ model User {
   email    String    @unique
   password String
   invoices Invoice[]
+  carts    Cart[]
 }
 
 model Inventory {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   description String
   products    Product[]
 }
 
 model Product {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   image       String
   price       Int
   description String
   stock       Int
   inventoryId String
-  inventory   Inventory  @relation(fields: [inventoryId], references: [id])
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  carts       Cart[]
 }
 
 model Invoice {
-  id            String   @id @default(uuid())
-  email         String
-  name          String
-  phone         String
-  items         String
-  total         Int
-  date          DateTime @default(now())
-  userId        String?
-  user          User?    @relation(fields: [userId], references: [id])
+  id     String   @id @default(uuid())
+  email  String
+  name   String
+  phone  String
+  items  String
+  total  Int
+  date   DateTime @default(now())
+  userId String?
+  user   User?    @relation(fields: [userId], references: [id])
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  productId String
+  quantity  Int
+  total     Int
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }

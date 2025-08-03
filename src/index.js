@@ -15,7 +15,9 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth.route.js'));
 app.use('/api/inventory', require('./routes/inventory.route.js'));
 app.use('/api/products', require('./routes/product.route.js'));
+app.use('/api/carts', require('./routes/cart.route.js'));
 app.use('/api/invoices', require('./routes/invoice.route.js'));
+app.use('/api/statistics', require('./routes/statistic.route.js'));
 
 app.get('/', (req, res, next) => {
     res.send("PosToko API is Running...");

@@ -19,6 +19,7 @@ model User {
   email    String    @unique
   password String
   invoices Invoice[]
+  carts    Cart[]
 }
 
 model Inventory {
@@ -37,6 +38,7 @@ model Product {
   stock       Int
   inventoryId String
   inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  carts       Cart[]
 }
 
 model Invoice {
@@ -49,4 +51,14 @@ model Invoice {
   date   DateTime @default(now())
   userId String?
   user   User?    @relation(fields: [userId], references: [id])
+}
+
+model Cart {
+  id        String  @id @default(uuid())
+  productId String
+  quantity  Int
+  total     Int
+  product   Product @relation(fields: [productId], references: [id])
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
 }

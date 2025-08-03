@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('../generated/prisma');
 const prisma = new PrismaClient();
+const auth = require('../middlewares/auth.middleware.js')
 
 const { successResponse, errorResponse } = require('../utils/response.js');
 const cookieOptions = require('../utils/cookieOptions.js');
@@ -49,6 +50,9 @@ router.post('/login', async ( req, res ) => {
     res.cookie('token', token, cookieOptions(req));
     return successResponse(res, 'Login Successful', { userid: user.id, email: email, token: token})
 });
+
+// All Routes Below Reqiure Authhentication
+router.use(auth);
 
 router.post('/logout', ( req, res ) => {
     res.clearCookie('token', {

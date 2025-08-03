@@ -64,7 +64,7 @@ router.put('/:id', async ( req, res ) => {
         // Check existed data inventory with id
         const existedId = await prisma.inventory.findUnique({ where: { id }});
         if (!existedId) {
-            return errorResponse(res, 'Inventory not found', 404);
+            return errorResponse(res, 'Inventory not found', existedId);
         }
 
         // Check is there existed inventory
