@@ -209,6 +209,10 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -226,7 +230,6 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -235,8 +238,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id       String    @id @default(uuid())\n  email    String    @unique\n  password String\n  invoices Invoice[]\n  carts    Cart[]\n}\n\nmodel Inventory {\n  id          String    @id @default(uuid())\n  name        String\n  description String\n  products    Product[]\n}\n\nmodel Product {\n  id          String    @id @default(uuid())\n  name        String\n  image       String\n  price       Int\n  description String\n  stock       Int\n  inventoryId String\n  inventory   Inventory @relation(fields: [inventoryId], references: [id])\n  carts       Cart[]\n}\n\nmodel Invoice {\n  id     String   @id @default(uuid())\n  email  String\n  name   String\n  phone  String\n  items  String\n  total  Int\n  date   DateTime @default(now())\n  userId String?\n  user   User?    @relation(fields: [userId], references: [id])\n}\n\nmodel Cart {\n  id        String  @id @default(uuid())\n  productId String\n  quantity  Int\n  total     Int\n  product   Product @relation(fields: [productId], references: [id])\n  userId    String\n  user      User    @relation(fields: [userId], references: [id])\n}\n",
-  "inlineSchemaHash": "2469fce282f4449df6a404bba09649761402b46aeeb1438310d0a821352d6af8",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id       String    @id @default(uuid())\n  email    String    @unique\n  password String\n  invoices Invoice[]\n  carts    Cart[]\n}\n\nmodel Inventory {\n  id          String    @id @default(uuid())\n  name        String\n  description String\n  products    Product[]\n}\n\nmodel Product {\n  id          String    @id @default(uuid())\n  name        String\n  image       String\n  price       Int\n  description String\n  stock       Int\n  inventoryId String\n  inventory   Inventory @relation(fields: [inventoryId], references: [id])\n  carts       Cart[]\n}\n\nmodel Invoice {\n  id     String   @id @default(uuid())\n  email  String\n  name   String\n  phone  String\n  items  String\n  total  Int\n  date   DateTime @default(now())\n  userId String?\n  user   User?    @relation(fields: [userId], references: [id])\n}\n\nmodel Cart {\n  id        String  @id @default(uuid())\n  productId String\n  quantity  Int\n  total     Int\n  product   Product @relation(fields: [productId], references: [id])\n  userId    String\n  user      User    @relation(fields: [userId], references: [id])\n}\n",
+  "inlineSchemaHash": "a34cb18f73848c2dd6e5087159cb8b1d4fd139b004eb844e6b752acbbc5a7193",
   "copyEngine": true
 }
 
@@ -277,6 +280,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "src/generated/prisma/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-rhel-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/schema.prisma")
