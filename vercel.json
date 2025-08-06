@@ -13,8 +13,8 @@
         }
     ],
     "env": {
-        "DATABASE_URL": "@database_url",
-        "JWT_SECRET": "@jwt_secret",
-        "BASE_URL": "@base_url"
+        "DATABASE_URL": "mysql://root:zrvdpbJLRjFLiGrBhilDRoAgqyVNiFCL@trolley.proxy.rlwy.net:26323/railway",
+        "JWT_SECRET": "5f8c2a4e15e7478db9d94d48a1ac3c9e9b4b16594c15a9e1a43c2b7c3dc946b2",
+        "BASE_URL": "https://postoko.vercel.app"
     }
 }
