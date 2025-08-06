@@ -10,13 +10,15 @@ router.use(auth);
 router.get('/', async ( req, res ) => {
     try {
         const items = await prisma.invoice.findMany();
+
+        // Check is there any invoice
         if (items.length === 0) {
             return successResponse(res, `User haven't checkout yet`, items);
         }
 
         return successResponse(res, 'Get all invoice', items);
     } catch (err) {
-        return errorResponse(res, "Failed to get all invoice", { error: err.message });
+        return errorResponse(res, "Failed to get all invoice", { error: err.message }, 500);
     }
 });
 
@@ -26,13 +28,15 @@ router.get('/:id', async ( req, res ) => {
 
     try {
         const items = await prisma.invoice.findUnique({ where: { id } });
+
+        // Check is there any id
         if (!items) {
             return errorResponse(res, 'Id not found', items, 404);
         }
 
         return successResponse(res, 'Get invoice by id', items);
     } catch (err) {
-        return errorResponse(res, "Failed to get invoice by id", { error: err.message });
+        return errorResponse(res, "Failed to get invoice by id", { error: err.message }, 500);
     }
 });
 
@@ -42,6 +46,8 @@ router.get('/email/:email', async ( req, res ) => {
 
     try {
         const items = await prisma.invoice.findMany({ where: { email } });
+
+        // Check is there any email
         if (!items) {
             return errorResponse(res, 'Email not found', items, 404);
         }

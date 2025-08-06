@@ -11,9 +11,10 @@ router.post('/', async ( req, res ) => {
     const { productId, quantity } = req.body;
 
     try {
+        // Check is there any product
         const product = await prisma.product.findUnique({ where: { id: productId } });
         if (!product) {
-            return errorResponse(res, "Product not found", product, 404)
+            return errorResponse(res, "Product not found", null, 404);
         }
 
         const total = product.price * quantity;
@@ -29,9 +30,7 @@ router.post('/', async ( req, res ) => {
 
         return successResponse(res, "Add to cart", cart);
     } catch (err) {
-        console.log(err);
-        
-        return errorResponse(res, "Failed to add cart", { error: err.message });
+        return errorResponse(res, "Failed to add cart", { error: err.message }, 500);
     }
 });
 
@@ -42,15 +41,18 @@ router.get('/', async ( req, res ) => {
             where: { userId: req.user.userId },
             include: { product: true }
         });
+
+        // Check is there any carts
         if (!cart) {
             return successResponse(res, "User haven't add cart yet", cart);
         }
         return successResponse(res, "Get all carts", cart);
     } catch (err) {
-        return errorResponse(res, "Failed to get all carts", { error: err.message });
+        return errorResponse(res, "Failed to get all carts", { error: err.message }, 500);
     }
 });
 
+// Checkout
 router.post('/checkout', async ( req, res ) => {
     const { email, name, phone } = req.body;
 
@@ -59,6 +61,8 @@ router.post('/checkout', async ( req, res ) => {
             where:{ userId: req.user.userId },
             include: { product: true }
         });
+
+        // Check is there any carts
         if (checkout.length === 0) {
             return successResponse(res, "Cart is empty", checkout);
         }
@@ -78,13 +82,14 @@ router.post('/checkout', async ( req, res ) => {
             }
         });
 
+        // Delete all cart from user
         await prisma.cart.deleteMany({
             where: { userId: req.user.userId }
         });
 
         return successResponse(res, "Checkout successed", invoice);
     } catch (err) {
-        return errorResponse(res, "Failed to checkout", {error: err.message})
+        return errorResponse(res, "Failed to checkout", {error: err.message}, 500);
     }
 });
 

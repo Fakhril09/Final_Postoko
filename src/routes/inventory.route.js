@@ -45,7 +45,7 @@ router.post('/', async ( req, res ) => {
         // Check is there existed inventory
         const existedInventory = await prisma.inventory.findFirst({ where: { name: name } });
         if (existedInventory) {
-            return errorResponse(res, `${name} already existed`, 400);
+            return errorResponse(res, `${name} already existed`, null);
         }
         const items = await prisma.inventory.create({ data: {name, description }});
 
@@ -64,7 +64,7 @@ router.put('/:id', async ( req, res ) => {
         // Check existed data inventory with id
         const existedId = await prisma.inventory.findUnique({ where: { id }});
         if (!existedId) {
-            return errorResponse(res, 'Inventory not found', existedId);
+            return errorResponse(res, 'Inventory not found', null);
         }
 
         // Check is there existed inventory
@@ -92,7 +92,7 @@ router.delete('/:id', async ( req, res ) => {
         // Check existed data inventory with id
         const existedId = await prisma.inventory.findUnique({ where: { id }});
         if (!existedId) {
-            return errorResponse(res, 'Inventory not found', 404);
+            return errorResponse(res, 'Inventory not found', null);
         }
 
         // Delete data inventory

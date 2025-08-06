@@ -8,6 +8,7 @@ const auth = require('../middlewares/auth.middleware.js')
 const { successResponse, errorResponse } = require('../utils/response.js');
 const cookieOptions = require('../utils/cookieOptions.js');
 
+// Registration User
 router.post('/register', async ( req, res ) => {
     const { email, password } = req.body;
 
@@ -37,6 +38,7 @@ router.post('/register', async ( req, res ) => {
     }
 });
 
+// Login User
 router.post('/login', async ( req, res ) => {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });
